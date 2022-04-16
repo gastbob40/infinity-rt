@@ -10,8 +10,8 @@
   "action": {
     "default_title": "Infinity RT",
     "default_icon": {
-      "48": "icon_48.png",
-      "128": "icon_128.png"
+      "48": "activated_48.png",
+      "128": "activated_128.png"
     }
   },
   "content_scripts": [{
