@@ -1,0 +1,28 @@
+{
+  "update_url": "https://clients2.google.com/service/update2/crx",
+  "manifest_version": 3,
+  "name": "Infinity RT",
+  "version": "1.0.0",
+  "description": "Make RT great again!",
+  "icons": {
+    "128": "icon_128.png"
+  },
+  "action": {
+    "default_title": "Infinity RT",
+    "default_icon": {
+      "48": "icon_48.png",
+      "128": "icon_128.png"
+    }
+  },
+  "content_scripts": [{
+    "matches": ["https://tickets.cri.epita.fr/*"],
+    "js": ["content.js"],
+    "css": ["content.css"]
+  }],
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "tabs"
+  ]
+}
