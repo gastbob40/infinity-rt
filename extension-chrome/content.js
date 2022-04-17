@@ -85,10 +85,10 @@ function checkGreetingLine(text, netiquetteBodyElement) {
     const isValid = lines[0] !== '' && lines[1] === '';
 
     if (isValid) {
-        netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${validSvg}<span style="padding-left: 8px">Présence d'une formule de salutation</span></div>`;
+        netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${validSvg}<span style="padding-left: 8px">Presence of a greeting line</span></div>`;
     } else {
-        netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${invalidSvg}<span style="padding-left: 8px">Absence d'une formule de salutation</span></div>`;
-        netiquetteBodyElement.innerHTML += `<div class="netiquette__error"><ul><li>Ligne #1 - Pas de ligne de salutation (une ligne vide doit être insérée après la ligne de salutation) </li></li></ul></div>`;
+        netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${invalidSvg}<span style="padding-left: 8px">Missing greeting line</span></div>`;
+        netiquetteBodyElement.innerHTML += `<div class="netiquette__error"><ul><li>Line #1 - No greeting line (an empty line must be inserted after the greeting line)</li></li></ul></div>`;
     }
 
     return isValid;
@@ -107,7 +107,7 @@ function checkLinesLength(text, netiquetteBodyElement) {
         const line = lines[i];
 
         if (line.match('^(?!>|(-- )).*\\s$')) {
-            errorLines.push(`<li>Ligne #${i + 1} - La ligne contient un espace à la fin</li>`);
+            errorLines.push(`<li>Line #${i + 1} - The line has a trailing whitespace</li>`);
         }
 
         if (line.length <= 72)
@@ -118,13 +118,13 @@ function checkLinesLength(text, netiquetteBodyElement) {
         if (line.length <= charLimit)
             continue;
 
-        errorLines.push(`<li>Ligne #${i + 1} - <b>${line.length}</b> caractères au lieu de <b>${charLimit}</b></li>`);
+        errorLines.push(`<li>Ligne #${i + 1} - <b>${line.length}</b> characters instead of <b>${charLimit}</b></li>`);
     }
 
     if (errorLines.length === 0) {
-        netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${validSvg}<span style="padding-left: 8px">Les lignes respectent les contraintes de tailles</span></div>`;
+        netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${validSvg}<span style="padding-left: 8px">The lines respect the constraints</span></div>`;
     } else {
-        netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${invalidSvg}<span style="padding-left: 8px">${errorLines.length} lignes ne respectent pas les contraintes de tailles</span></div>`;
+        netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${invalidSvg}<span style="padding-left: 8px">${errorLines.length} lines do not respect the constraints</span></div>`;
         netiquetteBodyElement.innerHTML += `<div class="netiquette__error"><ul>${errorLines.join('')}</ul></div>`;
     }
 
@@ -155,7 +155,7 @@ function checkQuote(text, netiquetteBodyElement) {
 
         if (line.startsWith('>')) {
             if (!inQuoteSection && sectionIndex > 2) {
-                errorLines.push(`<li>Ligne #${i + 1} - Quote attribution must be preceded by an empty line</li>`);
+                errorLines.push(`<li>Line #${i + 1} - Quote attribution must be preceded by an empty line</li>`);
                 continue
             }
 
@@ -166,7 +166,7 @@ function checkQuote(text, netiquetteBodyElement) {
                 if (i > 0 && lines[i - 1] !== '') {
                     isQuoteAttributed = true;
                 } else {
-                    errorLines.push(`<li>Ligne #${i + 1} - Quote section must be attributed</li>`);
+                    errorLines.push(`<li>Line #${i + 1} - Quote section must be attributed</li>`);
                 }
             }
 
@@ -177,24 +177,24 @@ function checkQuote(text, netiquetteBodyElement) {
 
                 if (line.charAt(j) === ' ') {
                     if (j + 1 < line.length && line.charAt(j + 1) === '>') {
-                        errorLines.push(`<li>Ligne #${i + 1} - Quoting multiple times should use multiple > without spaces in between</li>`);
+                        errorLines.push(`<li>Line #${i + 1} - Quoting multiple times should use multiple > without spaces in between</li>`);
                     }
 
                     break;
                 }
 
-                errorLines.push("<li>Ligne #" + (i + 1) + " - Quoting needs a space between the last > and its content</li>");
+                errorLines.push("<li>Line #" + (i + 1) + " - Quoting needs a space between the last > and its content</li>");
                 break
             }
         } else if (line !== '' && inQuoteSection) {
-            errorLines.push("<li>Ligne #" + (i + 1) + " - Quoting sections must be separated by empty lines</li>");
+            errorLines.push("<li>Line #" + (i + 1) + " - Quoting sections must be separated by empty lines</li>");
         } else {
             inQuoteSection = false;
         }
     }
 
     const isValid = errorLines.length === 0;
-    netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${isValid ? validSvg : invalidSvg}<span style="padding-left: 8px">Citations valides</span></div>`;
+    netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${isValid ? validSvg : invalidSvg}<span style="padding-left: 8px">${isValid ? 'Valid quotes' : 'Invalid quotes'}</span></div>`;
 
     if (!isValid) {
         netiquetteBodyElement.innerHTML += `<div class="netiquette__error"><ul>${errorLines.join('')}</ul></div>`;
@@ -214,10 +214,10 @@ function checkSalutationLine(text, netiquetteBodyElement) {
     const isValid = index >= 3 && (lines[index - 1] === '' && lines[index - 2] !== '' && lines[index - 3] === '');
 
     if (isValid) {
-        netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${validSvg}<span style="padding-left: 8px">Présence d'une formule de politesse</span></div>`;
+        netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${validSvg}<span style="padding-left: 8px">Presence of a salutation line</span></div>`;
     } else {
-        netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${invalidSvg}<span style="padding-left: 8px">Absence d'une formule de politesse</span></div>`;
-        netiquetteBodyElement.innerHTML += `<div class="netiquette__error"><ul><li>Ligne #${index - 1} - Pas de ligne de politesse (une ligne vide doit être insérée avant et après la ligne de politesse) </li></li></ul></div>`;
+        netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${invalidSvg}<span style="padding-left: 8px">Missing a salutation line</span></div>`;
+        netiquetteBodyElement.innerHTML += `<div class="netiquette__error"><ul><li>Line #${index - 1} - No salutation line (a blank line must be inserted before and after the salutation line)</li></li></ul></div>`;
     }
 
     return isValid;
@@ -233,11 +233,11 @@ function checkSignature(text, netiquetteBodyElement) {
     const signatureLines = lines.map((e, i) => e.includes('-- ') ? i : null).filter(e => e !== null);
 
     if (signatureLines.length > 1 || signatureLines.length === 0) {
-        netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${invalidSvg}<span style="padding-left: 8px">Signature invalide</span></div>`;
+        netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${invalidSvg}<span style="padding-left: 8px">Invalid signature</span></div>`;
         if (signatureLines.length > 1) {
-            netiquetteBodyElement.innerHTML += `<div class="netiquette__error"><ul>${signatureLines.map(e => `<li>Ligne #${e + 1} - Présence de <b>-- </b></li>`).join('')}</ul></div>`;
+            netiquetteBodyElement.innerHTML += `<div class="netiquette__error"><ul>${signatureLines.map(e => `<li>Line #${e + 1} - Presence of <b>-- </b></li>`).join('')}</ul></div>`;
         } else {
-            netiquetteBodyElement.innerHTML += `<div class="netiquette__error"><ul><li>Aucune signature</li></ul></div>`;
+            netiquetteBodyElement.innerHTML += `<div class="netiquette__error"><ul><li>No signature</li></ul></div>`;
         }
 
         return false;
@@ -246,24 +246,24 @@ function checkSignature(text, netiquetteBodyElement) {
     const signatureIndex = signatureLines[0];
 
     if (lines.length === signatureIndex + 1) {
-        netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${invalidSvg}<span style="padding-left: 8px">Signature invalide</span></div>`;
-        netiquetteBodyElement.innerHTML += `<div class="netiquette__error"><ul><li>Signature vide</li></ul></div>`;
+        netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${invalidSvg}<span style="padding-left: 8px">Invalid signature</span></div>`;
+        netiquetteBodyElement.innerHTML += `<div class="netiquette__error"><ul><li>Empty signature</li></ul></div>`;
         return false;
     }
 
     if (lines.length > signatureIndex + 5) {
-        netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${invalidSvg}<span style="padding-left: 8px">Signature invalide</span></div>`;
-        netiquetteBodyElement.innerHTML += `<div class="netiquette__error"><ul><li>Signature trop longue</li></ul></div>`;
+        netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${invalidSvg}<span style="padding-left: 8px">Invalid signature</span></div>`;
+        netiquetteBodyElement.innerHTML += `<div class="netiquette__error"><ul><li>Signature too long</li></ul></div>`;
         return false;
     }
 
     if (lines[signatureIndex + 1] === '') {
-        netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${invalidSvg}<span style="padding-left: 8px">Signature invalide</span></div>`;
-        netiquetteBodyElement.innerHTML += `<div class="netiquette__error"><ul><li>Une signature ne doit pas démarrer par une ligne vide</li></ul></div>`;
+        netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${invalidSvg}<span style="padding-left: 8px">Invalid signature</span></div>`;
+        netiquetteBodyElement.innerHTML += `<div class="netiquette__error"><ul><li>A signature must not start with an empty line</li></ul></div>`;
         return false;
     }
 
-    netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${validSvg}<span style="padding-left: 8px">Signature valide</span></div>`;
+    netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${validSvg}<span style="padding-left: 8px">Valid Signature</span></div>`;
 
     return true;
 }
