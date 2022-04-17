@@ -26,10 +26,10 @@ function init() {
     if (!rightSection) return;
 
     const rtBlock = document.createElement('div');
+    rtBlock.classList.add('ticket-info-basics')
 
     rtBlock.innerHTML = `
-<div class="ticket-info-basics">
-  <div class="titlebox body-content-class card ticket-info-links  " id="">
+<div class="titlebox body-content-class card ticket-info-links  " id="">
   <div class="titlebox-title card-header">
     <span class="toggle " data-toggle="collapse" data-target="#netiquette-checker" title="Toggle visibility"></span>
     <span class="left">Netiquette Checker - Infinity RT</span>
@@ -65,7 +65,6 @@ function init() {
         </div>
     </div>
   </div>
-</div>
 </div>`;
 
     rightSection.appendChild(rtBlock);
@@ -73,24 +72,31 @@ function init() {
     /** @type {HTMLTextAreaElement} */
     const textInput = document.querySelector('#UpdateContent');
     const netiquetteBody = document.querySelector('#netiquette-body');
+    const headerBlock = netiquetteBody.parentElement.parentElement;
+    console.log(headerBlock);
     if (!textInput) return;
 
-    textInput.addEventListener('input', () => checkNetiquette(textInput, netiquetteBody));
+    textInput.addEventListener('input', () => checkNetiquette(textInput, headerBlock, netiquetteBody));
 
     textInput.textContent += `\n-- \nQuentin Briolant <quentin.briolant@epita.fr>\nIng2 - 2023\nYAKA - LAB SI - 2023`
 }
 
 /**
  * @param {HTMLTextAreaElement} textInput
+ * @param {HTMLDivElement} headerBlock
  * @param {HTMLDivElement} netiquetteBodyElement
  */
-function checkNetiquette(textInput, netiquetteBodyElement) {
+function checkNetiquette(textInput, headerBlock, netiquetteBodyElement) {
     netiquetteBodyElement.innerHTML = '';
-    checkGreetingLine(textInput.value, netiquetteBodyElement);
-    checkLinesLength(textInput.value, netiquetteBodyElement);
-    checkQuote(textInput.value, netiquetteBodyElement);
-    checkSalutationLine(textInput.value, netiquetteBodyElement);
-    checkSignature(textInput.value, netiquetteBodyElement);
+
+    let hasErrors = !checkGreetingLine(textInput.value, netiquetteBodyElement);
+    hasErrors |= !checkLinesLength(textInput.value, netiquetteBodyElement);
+    hasErrors |= !checkQuote(textInput.value, netiquetteBodyElement);
+    hasErrors |= !checkSalutationLine(textInput.value, netiquetteBodyElement);
+    hasErrors |= !checkSignature(textInput.value, netiquetteBodyElement);
+
+    headerBlock.classList.remove('ticket-info-links', 'ticket-info-basics');
+    headerBlock.classList.add(hasErrors ? 'ticket-info-basics' : 'ticket-info-links');
 }
 
 
