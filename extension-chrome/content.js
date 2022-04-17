@@ -86,6 +86,8 @@ function init() {
  */
 function checkNetiquette(textInput, netiquetteBodyElement) {
     netiquetteBodyElement.innerHTML = '';
+    checkGreetingLine(textInput.value, netiquetteBodyElement);
+    checkSalutationLine(textInput.value, netiquetteBodyElement);
     checkSignature(textInput.value, netiquetteBodyElement);
 }
 
@@ -93,10 +95,43 @@ function checkNetiquette(textInput, netiquetteBodyElement) {
 /**
  * @param {string} text
  * @param {HTMLDivElement} netiquetteBodyElement
+ * @returns {boolean}
  */
 function checkGreetingLine(text, netiquetteBodyElement) {
+    const lines = text.split('\n');
+    const isValid = lines[0] !== '' && lines[1] === '';
 
+    if (isValid) {
+        netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${validSvg}<span style="padding-left: 8px">Présence d'une formule de salutation</span></div>`;
+    } else {
+        netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${invalidSvg}<span style="padding-left: 8px">Absence d'une formule de salutation</span></div>`;
+        netiquetteBodyElement.innerHTML += `<div class="netiquette__error"><ul><li>Ligne #1 - Pas de ligne de salutation (une ligne vide doit être insérée après la ligne de salutation) </li></li></ul></div>`;
+    }
+
+    return isValid;
 }
+
+/**
+ * @param {string} text
+ * @param {HTMLDivElement} netiquetteBodyElement
+ * @returns {boolean}
+ */
+function checkSalutationLine(text, netiquetteBodyElement) {
+    const lines = text.split('\n');
+    const index = lines.findIndex(line => line === '-- ');
+    const isValid = index >= 3 && (lines[index - 1] === '' && lines[index - 2] !== '' && lines[index - 3] === '');
+
+    if (isValid) {
+        netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${validSvg}<span style="padding-left: 8px">Présence d'une formule de politesse</span></div>`;
+    } else {
+        netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${invalidSvg}<span style="padding-left: 8px">Absence d'une formule de politesse</span></div>`;
+        netiquetteBodyElement.innerHTML += `<div class="netiquette__error"><ul><li>Ligne #${index - 1} - Pas de ligne de politesse (une ligne vide doit être insérée avant et après la ligne de politesse) </li></li></ul></div>`;
+    }
+
+    return isValid;
+}
+
+
 
 
 /**
@@ -106,14 +141,17 @@ function checkGreetingLine(text, netiquetteBodyElement) {
 function checkSignature(text, netiquetteBodyElement) {
     const lines = text.split('\n');
     const signatureLines = lines.map((e, i) => e.includes('-- ') ? i : null).filter(e => e !== null);
+    const isValid = signatureLines.length === 1;
 
-    netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${signatureLines.length === 1 ? validSvg : invalidSvg}<span style="padding-left: 8px">Signature ${signatureLines.length === 1 ? 'valide' : 'invalide'}</span></div>`;
+    netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${isValid ? validSvg : invalidSvg}<span style="padding-left: 8px">Signature ${isValid ? 'valide' : 'invalide'}</span></div>`;
 
     if (signatureLines.length === 0) {
         netiquetteBodyElement.innerHTML += `<div class="netiquette__error"><ul><li>Aucune signature</li></ul></div>`;
     } else if (signatureLines.length > 1) {
         netiquetteBodyElement.innerHTML += `<div class="netiquette__error"><ul>${signatureLines.map(e => `<li>Ligne #${e + 1} - Présence de <b>-- </b></li>`).join('')}</ul></div>`;
     }
+
+    return isValid;
 }
 
 init();
