@@ -88,6 +88,7 @@ function checkNetiquette(textInput, netiquetteBodyElement) {
     netiquetteBodyElement.innerHTML = '';
     checkGreetingLine(textInput.value, netiquetteBodyElement);
     checkLinesLength(textInput.value, netiquetteBodyElement);
+    checkQuote(textInput.value, netiquetteBodyElement);
     checkSalutationLine(textInput.value, netiquetteBodyElement);
     checkSignature(textInput.value, netiquetteBodyElement);
 }
@@ -112,7 +113,11 @@ function checkGreetingLine(text, netiquetteBodyElement) {
     return isValid;
 }
 
-
+/**
+ * @param {string} text
+ * @param {HTMLDivElement} netiquetteBodyElement
+ * @returns {boolean}
+ */
 function checkLinesLength(text, netiquetteBodyElement) {
     const lines = text.split('\n');
     const errorLines = [];
@@ -143,6 +148,78 @@ function checkLinesLength(text, netiquetteBodyElement) {
     }
 
     return errorLines.length === 0;
+}
+
+/**
+ * @param {string} text
+ * @param {HTMLDivElement} netiquetteBodyElement
+ * @returns {boolean}
+ */
+function checkQuote(text, netiquetteBodyElement) {
+    const lines = text.split('\n');
+    const errorLines = [];
+
+    let isQuoteAttributed = false;
+    let inQuoteSection = false;
+    let sectionIndex = 0;
+
+
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+
+        if (line.includes("-- "))
+            break;
+
+        sectionIndex = line !== '' ? sectionIndex + 1 : 0;
+
+        if (line.startsWith('>')) {
+            if (!inQuoteSection && sectionIndex > 2) {
+                errorLines.push(`<li>Ligne #${i + 1} - Quote attribution must be preceded by an empty line</li>`);
+                continue
+            }
+
+            inQuoteSection = true;
+
+            // Quote attribution lookup
+            if (!isQuoteAttributed) {
+                if (i > 0 && lines[i - 1] !== '') {
+                    isQuoteAttributed = true;
+                } else {
+                    errorLines.push(`<li>Ligne #${i + 1} - Quote section must be attributed</li>`);
+                }
+            }
+
+            // Multiple quoting rules
+            for (let j = 0; j < lines.length; j++) {
+                if (line.charAt(j) === '>')
+                    continue;
+
+                if (line.charAt(j) === ' ') {
+                    if (j + 1 < line.length && line.charAt(j + 1) === '>') {
+                        errorLines.push(`<li>Ligne #${i + 1} - Quoting multiple times should use multiple > without spaces in between</li>`);
+                    }
+
+                    break;
+                }
+
+                errorLines.push("<li>Ligne #" + (i + 1) + " - Quoting needs a space between the last > and its content</li>");
+                break
+            }
+        } else if (line !== '' && inQuoteSection) {
+            errorLines.push("<li>Ligne #" + (i + 1) + " - Quoting sections must be separated by empty lines</li>");
+        } else {
+            inQuoteSection = false;
+        }
+    }
+
+    const isValid = errorLines.length === 0;
+    netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${isValid ? validSvg : invalidSvg}<span style="padding-left: 8px">Citations valides</span></div>`;
+
+    if (!isValid) {
+        netiquetteBodyElement.innerHTML += `<div class="netiquette__error"><ul>${errorLines.join('')}</ul></div>`;
+    }
+
+    return isValid;
 }
 
 /**
