@@ -224,7 +224,7 @@ function checkSalutationLine(text, netiquetteBodyElement) {
         netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${validSvg}<span style="padding-left: 8px">Presence of a salutation line</span></div>`;
     } else {
         netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${invalidSvg}<span style="padding-left: 8px">Missing a salutation line</span></div>`;
-        netiquetteBodyElement.innerHTML += `<div class="netiquette__error"><ul><li>Line #${index - 1} - No salutation line (a blank line must be inserted before and after the salutation line)</li></li></ul></div>`;
+        netiquetteBodyElement.innerHTML += `<div class="netiquette__error"><ul><li>No salutation line (a blank line must be inserted before and after the salutation line)</li></li></ul></div>`;
     }
 
     return isValid;
