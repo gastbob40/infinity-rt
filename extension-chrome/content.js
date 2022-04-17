@@ -173,19 +173,41 @@ function checkSalutationLine(text, netiquetteBodyElement) {
 function checkSignature(text, netiquetteBodyElement) {
     const lines = text.split('\n');
     const signatureLines = lines.map((e, i) => e.includes('-- ') ? i : null).filter(e => e !== null);
-    const isValid = signatureLines.length === 1;
 
-    // TODO: missing information about lines count
+    if (signatureLines.length > 1 || signatureLines.length === 0) {
+        netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${invalidSvg}<span style="padding-left: 8px">Signature invalide</span></div>`;
+        if (signatureLines.length > 1) {
+            netiquetteBodyElement.innerHTML += `<div class="netiquette__error"><ul>${signatureLines.map(e => `<li>Ligne #${e + 1} - Présence de <b>-- </b></li>`).join('')}</ul></div>`;
+        } else {
+            netiquetteBodyElement.innerHTML += `<div class="netiquette__error"><ul><li>Aucune signature</li></ul></div>`;
+        }
 
-    netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${isValid ? validSvg : invalidSvg}<span style="padding-left: 8px">Signature ${isValid ? 'valide' : 'invalide'}</span></div>`;
-
-    if (signatureLines.length === 0) {
-        netiquetteBodyElement.innerHTML += `<div class="netiquette__error"><ul><li>Aucune signature</li></ul></div>`;
-    } else if (signatureLines.length > 1) {
-        netiquetteBodyElement.innerHTML += `<div class="netiquette__error"><ul>${signatureLines.map(e => `<li>Ligne #${e + 1} - Présence de <b>-- </b></li>`).join('')}</ul></div>`;
+        return false;
     }
 
-    return isValid;
+    const signatureIndex = signatureLines[0];
+
+    if (lines.length === signatureIndex + 1) {
+        netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${invalidSvg}<span style="padding-left: 8px">Signature invalide</span></div>`;
+        netiquetteBodyElement.innerHTML += `<div class="netiquette__error"><ul><li>Signature vide</li></ul></div>`;
+        return false;
+    }
+
+    if (lines.length > signatureIndex + 5) {
+        netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${invalidSvg}<span style="padding-left: 8px">Signature invalide</span></div>`;
+        netiquetteBodyElement.innerHTML += `<div class="netiquette__error"><ul><li>Signature trop longue</li></ul></div>`;
+        return false;
+    }
+
+    if (lines[signatureIndex + 1] === '') {
+        netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${invalidSvg}<span style="padding-left: 8px">Signature invalide</span></div>`;
+        netiquetteBodyElement.innerHTML += `<div class="netiquette__error"><ul><li>Une signature ne doit pas démarrer par une ligne vide</li></ul></div>`;
+        return false;
+    }
+
+    netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${validSvg}<span style="padding-left: 8px">Signature valide</span></div>`;
+
+    return true;
 }
 
 init();
