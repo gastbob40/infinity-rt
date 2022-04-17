@@ -1,14 +1,15 @@
 const matchingUrls = ['https://tickets.cri.epita.fr/Ticket/Update.html']
 
-function init() {
-    if (!matchingUrls.some(url => document.location.href.includes(url))) return;
+const validSvg = `<svg width="19px" height="15px" viewBox="0 0 19 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> 
+    <title>Check (valid)</title>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="RÃ¨gle" transform="translate(1.000000, -1.000000)" stroke="#48B54E" stroke-width="2">
+            <polyline id="Check-(valid)" points="0 8.5 5.35294118 15 16.0588235 2"></polyline>
+        </g>
+    </g>
+</svg>`;
 
-    /** @type {HTMLDivElement} */
-    const rightSection = document.querySelector('#ticket-update-metadata');
-    if (!rightSection) return;
-
-    const rtBlock = document.createElement('div');
-    const invalidSvg = `<svg width="17px" height="16px" viewBox="0 0 17 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+const invalidSvg = `<svg width="17px" height="16px" viewBox="0 0 17 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <title>Check (invalid)</title>
     <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round">
         <g id="RÃ¨gle" transform="translate(1.000000, -1.000000)" stroke="#E12525" stroke-width="2">
@@ -17,14 +18,14 @@ function init() {
     </g>
 </svg>`;
 
-    const validSvg = `<svg width="19px" height="15px" viewBox="0 0 19 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <title>Check (valid)</title>
-    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
-        <g id="RÃ¨gle" transform="translate(1.000000, -1.000000)" stroke="#48B54E" stroke-width="2">
-            <polyline id="Check-(valid)" points="0 8.5 5.35294118 15 16.0588235 2"></polyline>
-        </g>
-    </g>
-</svg>`;
+function init() {
+    if (!matchingUrls.some(url => document.location.href.includes(url))) return;
+
+    /** @type {HTMLDivElement} */
+    const rightSection = document.querySelector('#ticket-update-metadata');
+    if (!rightSection) return;
+
+    const rtBlock = document.createElement('div');
 
     rtBlock.innerHTML = `
 <div class="ticket-info-basics">
@@ -81,10 +82,38 @@ function init() {
 
 /**
  * @param {HTMLTextAreaElement} textInput
- * @param {HTMLDivElement} netiquetteBody
+ * @param {HTMLDivElement} netiquetteBodyElement
  */
-function checkNetiquette(textInput, netiquetteBody) {
-    console.log(textInput.value)
+function checkNetiquette(textInput, netiquetteBodyElement) {
+    netiquetteBodyElement.innerHTML = '';
+    checkSignature(textInput.value, netiquetteBodyElement);
+}
+
+
+/**
+ * @param {string} text
+ * @param {HTMLDivElement} netiquetteBodyElement
+ */
+function checkGreetingLine(text, netiquetteBodyElement) {
+
+}
+
+
+/**
+ * @param {string} text
+ * @param {HTMLDivElement} netiquetteBodyElement
+ */
+function checkSignature(text, netiquetteBodyElement) {
+    const lines = text.split('\n');
+    const signatureLines = lines.map((e, i) => e.includes('-- ') ? i : null).filter(e => e !== null);
+
+    netiquetteBodyElement.innerHTML += `<div class="netiquette__info">${signatureLines.length === 1 ? validSvg : invalidSvg}<span style="padding-left: 8px">Signature ${signatureLines.length === 1 ? 'valide' : 'invalide'}</span></div>`;
+
+    if (signatureLines.length === 0) {
+        netiquetteBodyElement.innerHTML += `<div class="netiquette__error"><ul><li>Aucune signature</li></ul></div>`;
+    } else if (signatureLines.length > 1) {
+        netiquetteBodyElement.innerHTML += `<div class="netiquette__error"><ul>${signatureLines.map(e => `<li>Ligne #${e + 1} - Présence de <b>-- </b></li>`).join('')}</ul></div>`;
+    }
 }
 
 init();
