@@ -37,32 +37,6 @@ function init() {
   </div>
   <div class="titlebox-content collapse show " id="netiquette-checker">
     <div class="card-body" id="netiquette-body">
-        <div class="netiquette__info">
-            ${validSvg}
-            <span style="padding-left: 8px">Présence d'une formule de salutation</span>
-        </div>
-        <div class="netiquette__info">
-            ${invalidSvg}
-            <span style="padding-left: 8px">2 lignes ne respectent pas les contraintes de tailles</span>
-        </div>
-        <div class="netiquette__error">
-            <ul>
-                <li>Ligne #23 - <b>78</b> caractères au lieu de <b>72</b></li>
-                <li>Ligne #24 - <b>82</b> caractères au lieu de <b>80</b> (citation)</li>
-            </ul>
-        </div>
-        <div class="netiquette__info">
-            ${validSvg}
-            <span style="padding-left: 8px">Présence d'une formule de politesse</span>
-        </div>
-        <div class="netiquette__info">
-            ${validSvg}
-            <span style="padding-left: 8px">Signature valide</span>
-        </div>
-        <div class="netiquette__info">
-            ${validSvg}
-            <span style="padding-left: 8px">Citation valide</span>
-        </div>
     </div>
   </div>
 </div>`;
@@ -73,10 +47,11 @@ function init() {
     const textInput = document.querySelector('#UpdateContent');
     const netiquetteBody = document.querySelector('#netiquette-body');
     const headerBlock = netiquetteBody.parentElement.parentElement;
-    console.log(headerBlock);
+
     if (!textInput) return;
 
     textInput.addEventListener('input', () => checkNetiquette(textInput, headerBlock, netiquetteBody));
+    checkNetiquette(textInput, headerBlock, netiquetteBody);
 
     textInput.textContent += `\n-- \nQuentin Briolant <quentin.briolant@epita.fr>\nIng2 - 2023\nYAKA - LAB SI - 2023`
 }
