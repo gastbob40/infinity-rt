@@ -120,7 +120,9 @@ function checkLinesLength(text, netiquetteBodyElement) {
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
 
-        // TODO : missing check for space at end of the line
+        if (line.match('^(?!>|(-- )).*\\s$')) {
+            errorLines.push(`<li>Ligne #${i + 1} - La ligne contient un espace à la fin</li>`);
+        }
 
         if (line.length <= 72)
             continue;
