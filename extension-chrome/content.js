@@ -102,12 +102,19 @@ function checkGreetingLine(text, netiquetteBodyElement) {
 function checkLinesLength(text, netiquetteBodyElement) {
     const lines = text.split('\n');
     const errorLines = [];
+    let hasPassedSignature = false;
 
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
 
         if (line.match('^(?!>|(-- )).*\\s$')) {
             errorLines.push(`<li>Line #${i + 1} - The line has a trailing whitespace</li>`);
+        }
+
+        hasPassedSignature |= line.includes('-- ');
+
+        if (!hasPassedSignature && line.length !== 0 && line.length < 60 && lines.length > i + 1 && lines[i + 1] !== '' && !line.startsWith('>') && !lines[i + 1].startsWith('>')) {
+            errorLines.push(`<li>Line #${i + 1} - The line is too short (<b>${line.length}</b> characters instead of more than <b>60</b>)</li>`);
         }
 
         if (line.length <= 72)
