@@ -1,5 +1,6 @@
-#netiquette-body {
-    padding: 16px 38px 8px 38px
+#netiquette-body, #netiquette-options {
+    padding: 16px 38px 8px 38px;
+    overflow: hidden;
 }
 
 .netiquette__info {
@@ -24,4 +25,16 @@
 
 .netiquette__error > ul > li:last-child {
     margin-bottom: 8px;
+}
+
+#netiquette-options > * {
+    margin-bottom: 8px;
+}
+
+#netiquette-options > textarea {
+    resize: none;
+}
+
+#netiquette-switcher {
+    cursor: pointer;
 }
