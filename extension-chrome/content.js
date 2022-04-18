@@ -18,7 +18,7 @@ const invalidSvg = `<svg width="17px" height="16px" viewBox="0 0 17 16" version=
     </g>
 </svg>`;
 
-function init() {
+function init(config) {
     if (!matchingUrls.some(url => document.location.href.includes(url))) return;
 
     /** @type {HTMLDivElement} */
@@ -41,20 +41,22 @@ function init() {
     
     <div class="card-body" id="netiquette-options" style="display: none;">
         <div class="custom-control custom-checkbox">
-            <input type="checkbox" class="custom-control-input" name="netiquette-disable-submit" id="netiquette-disable-submit">
+            <input type="checkbox" class="custom-control-input" name="netiquette-disable-submit" id="netiquette-disable-submit" ${config.disableSubmit ? 'checked' : ''}>
             <label class="custom-control-label" for="netiquette-disable-submit">
                 Disabled submit if netiquette is not respected
             </label>
         </div>
         
         <div class="custom-control custom-checkbox">
-            <input type="checkbox" class="custom-control-input" name="netiquette-active-signature" id="netiquette-active-signature">
-            <label class="custom-control-label" for="netiquette-active-signature">
+            <input type="checkbox" class="custom-control-input" name="netiquette-enable-signature" id="netiquette-enable-signature" ${config.enableSignature ? 'checked' : ''}>
+            <label class="custom-control-label" for="netiquette-enable-signature">
                 Enable signature
             </label>
         </div>
         
-        <textarea autocomplete="off" class="form-control messagebox " wrap="soft" id="netiquette-signature" placeholder="Signature" rows="4"></textarea>
+        <textarea autocomplete="off" class="form-control messagebox " wrap="soft" id="netiquette-signature" placeholder="Signature" rows="4">${config.signature}</textarea>
+        
+        <button id="netiquette-options-submit" class="button btn btn-primary form-control">Save</button>
     </div>
   </div>
 </div>`;
@@ -66,14 +68,37 @@ function init() {
     const netiquetteBody = document.querySelector('#netiquette-body');
     const netiquetteSwitcher = document.querySelector('#netiquette-switcher');
     const netiquetteOptions = document.querySelector('#netiquette-options');
+    const netiquetteOptionsSubmit = document.querySelector('#netiquette-options-submit');
     const headerBlock = netiquetteBody.parentElement.parentElement;
 
     if (!textInput) return;
+
+    if (config.enableSignature) {
+        textInput.value += `\n-- \n${config.signature}`;
+    }
 
     textInput.addEventListener('input', () => checkNetiquette(textInput, headerBlock, netiquetteBody));
     checkNetiquette(textInput, headerBlock, netiquetteBody);
 
     netiquetteSwitcher.addEventListener('click', () => switchNetiquetteView(netiquetteBody, netiquetteOptions));
+    netiquetteOptionsSubmit.addEventListener('click', (e) => saveNetiquetteOptions(e));
+}
+
+/**
+ * @param e {Event}
+ */
+function saveNetiquetteOptions(e) {
+    e.preventDefault()
+    const disableSubmit = document.querySelector('#netiquette-disable-submit').checked;
+    const enableSignature = document.querySelector('#netiquette-enable-signature').checked;
+    const signature = document.querySelector('#netiquette-signature').value;
+    chrome.storage.sync.set({
+        disableSubmit: disableSubmit,
+        enableSignature: enableSignature,
+        signature: signature
+    }, () => {
+        alert('Options saved');
+    });
 }
 
 /**
@@ -320,6 +345,14 @@ function checkSignature(text, netiquetteBodyElement) {
     return true;
 }
 
-init();
+/*
+  disableSubmit: disableSubmit,
+        activeSignature: activeSignature,
+        signature: signature
+ */
+chrome.storage.sync.get(['disableSubmit', 'enableSignature', 'signature'], function(result) {
+    console.log(result);
+    init(result);
+});
 
 

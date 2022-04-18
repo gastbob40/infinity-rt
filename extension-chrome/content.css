@@ -38,3 +38,7 @@
 #netiquette-switcher {
     cursor: pointer;
 }
+
+#netiquette-options-submit {
+    float: right;
+}
