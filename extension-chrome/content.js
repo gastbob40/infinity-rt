@@ -69,6 +69,7 @@ function init(config) {
     const netiquetteSwitcher = document.querySelector('#netiquette-switcher');
     const netiquetteOptions = document.querySelector('#netiquette-options');
     const netiquetteOptionsSubmit = document.querySelector('#netiquette-options-submit');
+    const submitButton = document.querySelector("input[name='SubmitTicket']");
     const headerBlock = netiquetteBody.parentElement.parentElement;
 
     if (!textInput) return;
@@ -77,8 +78,8 @@ function init(config) {
         textInput.value += `\n-- \n${config.signature}`;
     }
 
-    textInput.addEventListener('input', () => checkNetiquette(textInput, headerBlock, netiquetteBody));
-    checkNetiquette(textInput, headerBlock, netiquetteBody);
+    textInput.addEventListener('input', () => checkNetiquette(textInput, headerBlock, netiquetteBody, submitButton, config));
+    checkNetiquette(textInput, headerBlock, netiquetteBody, submitButton, config);
 
     netiquetteSwitcher.addEventListener('click', () => switchNetiquetteView(netiquetteBody, netiquetteOptions));
     netiquetteOptionsSubmit.addEventListener('click', (e) => saveNetiquetteOptions(e));
@@ -130,8 +131,10 @@ function switchNetiquetteView(netiquetteBody, netiquetteOptions) {
  * @param {HTMLTextAreaElement} textInput
  * @param {HTMLDivElement} headerBlock
  * @param {HTMLDivElement} netiquetteBodyElement
+ * @param {HTMLButtonElement} submitButton
+ * @param {Object} config
  */
-function checkNetiquette(textInput, headerBlock, netiquetteBodyElement) {
+function checkNetiquette(textInput, headerBlock, netiquetteBodyElement, submitButton, config) {
     netiquetteBodyElement.innerHTML = '';
 
     let hasErrors = !checkGreetingLine(textInput.value, netiquetteBodyElement);
@@ -142,6 +145,10 @@ function checkNetiquette(textInput, headerBlock, netiquetteBodyElement) {
 
     headerBlock.classList.remove('ticket-info-links', 'ticket-info-basics');
     headerBlock.classList.add(hasErrors ? 'ticket-info-basics' : 'ticket-info-links');
+
+    if (config.disableSubmit) {
+        submitButton.disabled = hasErrors;
+    }
 }
 
 
@@ -350,7 +357,7 @@ function checkSignature(text, netiquetteBodyElement) {
         activeSignature: activeSignature,
         signature: signature
  */
-chrome.storage.sync.get(['disableSubmit', 'enableSignature', 'signature'], function(result) {
+chrome.storage.sync.get(['disableSubmit', 'enableSignature', 'signature'], function (result) {
     console.log(result);
     init(result);
 });
