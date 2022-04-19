@@ -21,6 +21,7 @@
   }],
   "permissions": [
     "storage",
+    "webRequest",
     "https://tickets.cri.epita.fr/*"
   ]
 }

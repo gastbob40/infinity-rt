@@ -18,16 +18,22 @@ const invalidSvg = `<svg width="17px" height="16px" viewBox="0 0 17 16" version=
     </g>
 </svg>`;
 
-function init(config) {
+async function init() {
     if (!matchingUrls.some(url => document.location.href.includes(url))) return;
+
+    const config = await browser.storage.local.get(['disableSubmit', 'enableSignature', 'signature']);
 
     /** @type {HTMLDivElement} */
     const rightSection = document.querySelector('#ticket-update-metadata');
-    if (!rightSection) return;
+    if (!rightSection) {
+        console.error('Could not find right section');
+        return;
+    }
 
     const rtBlock = document.createElement('div');
     rtBlock.classList.add('ticket-info-basics')
-
+    console.log(config.disableSubmit);
+    console.log('aze')
     rtBlock.innerHTML = `
 <div class="titlebox body-content-class card ticket-info-links  " id="">
   <div class="titlebox-title card-header">
@@ -54,7 +60,7 @@ function init(config) {
             </label>
         </div>
         
-        <textarea autocomplete="off" class="form-control messagebox " wrap="soft" id="netiquette-signature" placeholder="Signature" rows="4">${config.signature}</textarea>
+        <textarea autocomplete="off" class="form-control messagebox " wrap="soft" id="netiquette-signature" placeholder="Signature" rows="4">${config.signature !== undefined ? config.signature : ''}</textarea>
         
         <button id="netiquette-options-submit" class="button btn btn-primary form-control">Save</button>
     </div>
@@ -62,6 +68,7 @@ function init(config) {
 </div>`;
 
     rightSection.appendChild(rtBlock);
+    console.log('[Infinity RT] Netiquette checker loaded');
 
     /** @type {HTMLTextAreaElement} */
     const textInput = document.querySelector('#UpdateContent');
@@ -93,13 +100,15 @@ function saveNetiquetteOptions(e) {
     const disableSubmit = document.querySelector('#netiquette-disable-submit').checked;
     const enableSignature = document.querySelector('#netiquette-enable-signature').checked;
     const signature = document.querySelector('#netiquette-signature').value;
-    chrome.storage.sync.set({
+    browser.storage.local.set({
         disableSubmit: disableSubmit,
         enableSignature: enableSignature,
         signature: signature
-    }, () => {
-        alert('Options saved');
+    }).then(() => {
+        console.log('[Infinity RT] Netiquette options saved');
     });
+
+    switchNetiquetteView(document.querySelector('#netiquette-body'), document.querySelector('#netiquette-options'));
 }
 
 /**
@@ -357,9 +366,5 @@ function checkSignature(text, netiquetteBodyElement) {
         activeSignature: activeSignature,
         signature: signature
  */
-chrome.storage.sync.get(['disableSubmit', 'enableSignature', 'signature'], function (result) {
-    console.log(result);
-    init(result);
-});
-
+init();
 
