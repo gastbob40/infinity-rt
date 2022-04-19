@@ -1,0 +1,26 @@
+{
+  "manifest_version": 2,
+  "name": "Infinity RT",
+  "version": "1.0.0",
+  "description": "Make RT great again!",
+  "homepage_url": "https://github.com/gastbob40/infinity-rt",
+  "icons": {
+    "128": "icon_128.png"
+  },
+  "browser_action": {
+    "default_title": "Infinity RT",
+    "default_icon": {
+      "48": "activated_48.png",
+      "128": "activated_128.png"
+    }
+  },
+  "content_scripts": [{
+    "matches": ["https://tickets.cri.epita.fr/*"],
+    "js": ["content.js"],
+    "css": ["content.css"]
+  }],
+  "permissions": [
+    "storage",
+    "https://tickets.cri.epita.fr/*"
+  ]
+}

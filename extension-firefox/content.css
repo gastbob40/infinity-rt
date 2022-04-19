@@ -1,0 +1,44 @@
+#netiquette-body, #netiquette-options {
+    padding: 16px 38px 8px 38px;
+    overflow: hidden;
+}
+
+.netiquette__info {
+    font-weight: 600;
+    padding-bottom: 8px;
+    display: flex;
+    align-items: center;
+}
+
+.netiquette__error {
+    padding: 2px 0;
+    font-size: 0.9em;
+}
+
+.netiquette__error > ul {
+    margin-bottom: 0;
+}
+
+.netiquette__error > ul > li {
+    margin-bottom: 4px;
+}
+
+.netiquette__error > ul > li:last-child {
+    margin-bottom: 8px;
+}
+
+#netiquette-options > * {
+    margin-bottom: 8px;
+}
+
+#netiquette-options > textarea {
+    resize: none;
+}
+
+#netiquette-switcher {
+    cursor: pointer;
+}
+
+#netiquette-options-submit {
+    float: right;
+}
