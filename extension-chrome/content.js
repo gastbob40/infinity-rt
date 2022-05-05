@@ -1,4 +1,4 @@
-const matchingUrls = ['https://tickets.cri.epita.fr/Ticket/Update.html']
+const matchingUrls = ['https://tickets.cri.epita.fr/Ticket/Update.html', 'https://tickets.cri.epita.fr/Ticket/Create.html']
 
 const validSvg = `<svg width="19px" height="15px" viewBox="0 0 19 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> 
     <title>Check (valid)</title>
@@ -22,7 +22,7 @@ function init(config) {
     if (!matchingUrls.some(url => document.location.href.includes(url))) return;
 
     /** @type {HTMLDivElement} */
-    const rightSection = document.querySelector('#ticket-update-metadata');
+    const rightSection = document.querySelector('#ticket-update-metadata') || document.querySelector('#ticket-create-metadata');
     if (!rightSection) return;
 
     const rtBlock = document.createElement('div');
@@ -62,9 +62,10 @@ function init(config) {
 </div>`;
 
     rightSection.appendChild(rtBlock);
+    console.log('[Infinity RT] Netiquette checker loaded');
 
     /** @type {HTMLTextAreaElement} */
-    const textInput = document.querySelector('#UpdateContent');
+    const textInput = document.querySelector('#UpdateContent') || document.querySelector('#Content');
     const netiquetteBody = document.querySelector('#netiquette-body');
     const netiquetteSwitcher = document.querySelector('#netiquette-switcher');
     const netiquetteOptions = document.querySelector('#netiquette-options');
@@ -98,7 +99,7 @@ function saveNetiquetteOptions(e) {
         enableSignature: enableSignature,
         signature: signature
     }, () => {
-        alert('Options saved');
+        console.log('[Infinity RT] Netiquette options saved');
     });
 }
 
@@ -358,7 +359,6 @@ function checkSignature(text, netiquetteBodyElement) {
         signature: signature
  */
 chrome.storage.sync.get(['disableSubmit', 'enableSignature', 'signature'], function (result) {
-    console.log(result);
     init(result);
 });
 

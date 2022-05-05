@@ -1,4 +1,4 @@
-const matchingUrls = ['https://tickets.cri.epita.fr/Ticket/Update.html']
+const matchingUrls = ['https://tickets.cri.epita.fr/Ticket/Update.html', 'https://tickets.cri.epita.fr/Ticket/Create.html']
 
 const validSvg = `<svg width="19px" height="15px" viewBox="0 0 19 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> 
     <title>Check (valid)</title>
@@ -24,16 +24,12 @@ async function init() {
     const config = await browser.storage.local.get(['disableSubmit', 'enableSignature', 'signature']);
 
     /** @type {HTMLDivElement} */
-    const rightSection = document.querySelector('#ticket-update-metadata');
-    if (!rightSection) {
-        console.error('Could not find right section');
-        return;
-    }
+    const rightSection = document.querySelector('#ticket-update-metadata') || document.querySelector('#ticket-create-metadata');
+    if (!rightSection) return;
 
     const rtBlock = document.createElement('div');
     rtBlock.classList.add('ticket-info-basics')
-    console.log(config.disableSubmit);
-    console.log('aze')
+
     rtBlock.innerHTML = `
 <div class="titlebox body-content-class card ticket-info-links  " id="">
   <div class="titlebox-title card-header">
@@ -71,7 +67,7 @@ async function init() {
     console.log('[Infinity RT] Netiquette checker loaded');
 
     /** @type {HTMLTextAreaElement} */
-    const textInput = document.querySelector('#UpdateContent');
+    const textInput = document.querySelector('#UpdateContent') || document.querySelector('#Content');
     const netiquetteBody = document.querySelector('#netiquette-body');
     const netiquetteSwitcher = document.querySelector('#netiquette-switcher');
     const netiquetteOptions = document.querySelector('#netiquette-options');
@@ -361,10 +357,5 @@ function checkSignature(text, netiquetteBodyElement) {
     return true;
 }
 
-/*
-  disableSubmit: disableSubmit,
-        activeSignature: activeSignature,
-        signature: signature
- */
 init();
 
