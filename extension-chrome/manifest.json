@@ -20,9 +20,6 @@
     "css": ["content.css"]
   }],
   "permissions": [
-    "storage",
-    "activeTab",
-    "scripting",
-    "tabs"
+    "storage"
   ]
 }
