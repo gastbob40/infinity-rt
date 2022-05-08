@@ -1,4 +1,4 @@
-const matchingUrls = ['https://tickets.cri.epita.fr/Ticket/Update.html', 'https://tickets.cri.epita.fr/Ticket/Create.html']
+const matchingUrls = ['https://tickets.cri.epita.fr/Ticket/Update.html', 'https://tickets.cri.epita.fr/Ticket/Create.html', 'https://tickets.cri.epita.fr/SelfService/Create.html']
 
 const validSvg = `<svg width="19px" height="15px" viewBox="0 0 19 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> 
     <title>Check (valid)</title>
@@ -22,8 +22,16 @@ function init(config) {
     if (!matchingUrls.some(url => document.location.href.includes(url))) return;
 
     /** @type {HTMLDivElement} */
-    const rightSection = document.querySelector('#ticket-update-metadata') || document.querySelector('#ticket-create-metadata');
-    if (!rightSection) return;
+    let rightSection = document.querySelector('#ticket-update-metadata') || document.querySelector('#ticket-create-metadata');
+
+    if (!rightSection) {
+        console.log('[Infinity RT] Right section not found, creating one');
+        rightSection = document.createElement('div');
+        rightSection.id = 'ticket-create-metadata';
+        document.querySelector(".ticket-info-basics").parentElement.appendChild(rightSection);
+
+        document.querySelector('.ticket-info-basics').id = 'ticket-create-message';
+    }
 
     const rtBlock = document.createElement('div');
     rtBlock.classList.add('ticket-info-basics')
@@ -101,6 +109,8 @@ function saveNetiquetteOptions(e) {
     }, () => {
         console.log('[Infinity RT] Netiquette options saved');
     });
+
+    switchNetiquetteView(document.querySelector('#netiquette-body'), document.querySelector('#netiquette-options'));
 }
 
 /**
