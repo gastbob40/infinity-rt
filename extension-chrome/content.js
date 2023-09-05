@@ -1,4 +1,4 @@
-const matchingUrls = ['https://tickets.cri.epita.fr/Ticket/Update.html', 'https://tickets.cri.epita.fr/Ticket/Create.html', 'https://tickets.cri.epita.fr/SelfService/Create.html']
+const matchingUrls = ['https://tickets.forge.epita.fr/Ticket/Update.html', 'https://tickets.forge.epita.fr/Ticket/Create.html', 'https://tickets.cri.epita.fr/SelfService/Create.html']
 
 const validSvg = `<svg width="19px" height="15px" viewBox="0 0 19 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> 
     <title>Check (valid)</title>
